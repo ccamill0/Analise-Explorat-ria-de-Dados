@@ -1,0 +1,97 @@
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais para formatação, cores e links
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% Definindo a cor Laranja Itaú para os links e destaques
+\definecolor{ItauOrange}{HTML}{EC7000}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ItauOrange,
+    urlcolor=ItauOrange,
+    pdftitle={Análise Exploratória: Guardrails Training Data}
+}
+
+% Formatação de títulos
+\titleformat{\section}{\Large\bfseries\color{ItauOrange}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+
+\title{\textbf{Análise Exploratória de Dados (EDA) \\ \Large Guardrails Training Data - Case Financeiro}}
+\author{Carlos Henrique Camillo da Silva / @ccamill0}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Visão Geral do Projeto}
+Este projeto consiste em um Dashboard interativo construído em \textbf{Python (Dash/Plotly)} para realizar a Análise Exploratória de Dados (EDA) de um dataset focado em injeções de prompt e cibersegurança (Guardrails). 
+
+O objetivo principal não foi apenas visualizar os dados, mas diagnosticar a "saúde" do dataset antes do treinamento de Modelos de Linguagem (LLMs), identificando vieses, vazamentos de dados (Data Leakage) e oportunidades para criação de regras heurísticas de defesa.
+
+\section{Principais Descobertas e Diagnósticos}
+A análise profunda dos dados revelou gargalos arquitetônicos que inviabilizariam o uso do dataset em sua forma bruta para um ambiente de produção corporativo:
+
+\subsection{1. O Falso Positivo do Balanceamento (Viés Temático)}
+O dataset original apresentava um desbalanceamento severo (90\% Inseguro / 10\% Seguro). Para corrigir isso, aplicou-se a técnica de \textit{undersampling}. Embora a paridade matemática de 50/50 tenha sido atingida, o Dashboard revelou que a classe "Segura" é dominada quase exclusivamente por conversas de um fórum de saúde mental (\textit{suicide-watch}). 
+\textbf{Conclusão Analítica:} O modelo treinado com esses dados associaria segurança a temas de terapia, reprovando conversas financeiras benignas por falta de vocabulário correspondente.
+
+\subsection{2. Risco de Data Leakage (Vazamento de Dados)}
+A análise semântica (Nuvens de Palavras) detectou forte presença de tokens de sistema estruturais, como \texttt{start\_of\_turn} e \texttt{end\_of\_turn}, rotulados dentro da classe "Insegura".
+\textbf{Conclusão Analítica:} Sem uma etapa de limpeza via Expressões Regulares (Regex), o modelo penalizaria prompts legítimos gerados pelas APIs internas do banco, gerando altos índices de Falsos Positivos.
+
+\subsection{3. Engenharia de Features e Regras Heurísticas}
+Variáveis comportamentais criadas no projeto (como comprimento do texto e contagem de caracteres especiais) apresentaram correlação linear fraca com a variável alvo. Contudo, a análise de \textit{Outliers} revelou o modus operandi de ataques de força bruta (ex: textos de 40.000 caracteres).
+\textbf{Conclusão Analítica:} A arquitetura de segurança não deve depender exclusivamente de IA. Recomenda-se uma defesa em múltiplas camadas, implementando WAFs (Hard Rules) para bloquear instantaneamente anomalias volumétricas, economizando custos de inferência de LLM.
+
+\section{Estrutura Técnica e Ferramentas}
+\begin{itemize}[label=\textcolor{ItauOrange}{\textbullet}]
+    \item \textbf{Linguagem:} Python 3.x
+    \item \textbf{Framework Web:} Dash (Plotly)
+    \item \textbf{Manipulação de Dados:} Pandas, NumPy
+    \item \textbf{Técnicas Aplicadas:} Feature Engineering, Undersampling, Análise de Multicolinearidade (Pearson), NLP Tracker.
+\end{itemize}
+
+\section{Como Executar o Projeto}
+Para rodar este Dashboard localmente, siga os passos abaixo:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Clone este repositório:
+    \begin{verbatim}
+    git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+    \end{verbatim}
+    
+    \item Crie e ative um ambiente virtual:
+    \begin{verbatim}
+    python -m venv venv
+    source venv/bin/activate  # No Windows use: venv\Scripts\activate
+    \end{verbatim}
+    
+    \item Instale as dependências listadas:
+    \begin{verbatim}
+    pip install -r requirements.txt
+    \end{verbatim}
+    
+    \item Execute a aplicação principal:
+    \begin{verbatim}
+    python app.py
+    \end{verbatim}
+    
+    \item Acesse em seu navegador através do endereço \texttt{http://127.0.0.1:8050}.
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+    \textit{Projeto desenvolvido como demonstração de pensamento crítico em Data Science e Dataviz.}
+\end{center}
+
+\end{document}
