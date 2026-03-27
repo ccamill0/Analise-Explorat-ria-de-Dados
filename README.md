@@ -7,6 +7,9 @@ Este projeto consiste em um Dashboard interativo construído em **Python (Dash/P
 
 O objetivo principal não foi apenas visualizar os dados, mas diagnosticar a "saúde" do dataset antes do treinamento de algoritmos, identificando vieses, vazamentos de dados (*Data Leakage*) e oportunidades para criação de regras heurísticas de defesa em um ambiente corporativo (como um banco).
 
+<img width="1881" height="829" alt="Captura de Tela (937)" src="https://github.com/user-attachments/assets/82e6a3bb-e3d7-4a5c-97d8-5ccc36c37f38" />
+<img width="1879" height="851" alt="Captura de Tela (939)" src="https://github.com/user-attachments/assets/68f2b40c-bb3b-4d99-98ec-22c03ea8aa9c" />
+
 ---
 
 ## 🧠 Principais Descobertas e Diagnósticos
